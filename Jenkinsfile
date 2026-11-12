@@ -15,9 +15,11 @@ pipeline {
             }
         }
 
-        stage('Test') {
+       stage('Test') {
             steps {
-                bat 'mvn test'
+                dir('HelloMaven') {
+                    bat 'mvn test'
+                }
             }
         }
 
