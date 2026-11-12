@@ -1,21 +1,24 @@
+
 pipeline {
     agent any
 
     stages {
+
         stage('Checkout') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/shaikshahid555/javaCICDpipeline.git'
+                echo 'Checking out source code'
             }
         }
 
         stage('Compile') {
             steps {
-                bat 'mvn clean compile'
+                dir('HelloMaven') {
+                    bat 'mvn clean compile'
+                }
             }
         }
 
-       stage('Test') {
+        stage('Test') {
             steps {
                 dir('HelloMaven') {
                     bat 'mvn test'
@@ -25,16 +28,18 @@ pipeline {
 
         stage('Package') {
             steps {
-                bat 'mvn package'
+                dir('HelloMaven') {
+                    bat 'mvn package'
+                }
             }
         }
     }
 
     post {
         success {
-            archiveArtifacts artifacts: 'target/*.jar',
-                             fingerprint: true
-            echo 'Java CI/CD Pipeline completed successfully!'
+            echo 'Build completed successfully!'
+            archiveArtifacts artifacts: 'HelloMaven/target/*.jar',
+                             allowEmptyArchive: true
         }
 
         failure {
